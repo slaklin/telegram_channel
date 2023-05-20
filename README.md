@@ -9,6 +9,7 @@ This project provides scripts for downloading thematic images from various sites
   - /start
   - /newbot
 - How to create a channel, bot and get a token - [click here](https://smmplanner.com/blog/otlozhennyj-posting-v-telegram/)
+- Take the chat_id of the channel — this is a link to it, for example: @dvmn_flood
 - Bypass Telegram blocking - [click here](https://bigpicture.ru/kak-obojti-blokirovku-telegram-na-smartfone-desktope-i-v-brauzere/)
 
 #### Requirements
@@ -23,6 +24,7 @@ pip install -r requirements.txt
 
 - TELEGRAM_BOT_TOKEN
 - NASA_API_KEY
+- TELEGRAM_CHAT_ID
 
 1. Place the `.env` file in the root folder of your project.
 2. `.env` contains text data without quotes.
@@ -33,6 +35,7 @@ For example, if you print `.env` content, you will see:
 $ cat .env
 TELEGRAM_BOT_TOKEN=1a5d754733b01560143c70238efa4esad1taec48
 NASA_API_KEY=1a5d754733b01560143c70238efa4esad1taec48
+TELEGRAM_CHAT_ID=@cosmic1991
 ```
 ## Example of running a script
 

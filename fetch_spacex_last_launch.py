@@ -6,35 +6,32 @@ import requests
 
 def fetch_spacex_last_launch(url):
     directory = os.path.join(os.getcwd(), r'space_photos')
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    os.makedirs(directory, exist_ok=True)
     response = requests.get(url)
     response.raise_for_status()
     links_to_photos = response.json()["links"]["flickr"]["original"]
-    if len(links_to_photos) > 0:
-        for index_image, image in enumerate(links_to_photos, 1):
-            response = requests.get(image)
-            response.raise_for_status()
-            image_properties = f'{directory}/spacex_{index_image}{os.path.splitext(image)[1]}'
-            with open(image_properties, 'wb') as file:
-                file.write(response.content)
-                print(f'Downloaded spacex_{image_properties}')
-    else:
-        print("There are no photos for this launch.")
+    download_the_last_launch(links_to_photos, directory)
+
+
+def download_the_last_launch(links_to_photos, directory):
+    for index_image, image in enumerate(links_to_photos, 1):
+        response = requests.get(image)
+        response.raise_for_status()
+        download_link = f'{directory}/spacex_{index_image}{os.path.splitext(image)[1]}'
+        with open(download_link, 'wb') as file:
+            file.write(response.content)
+            print(f'Downloaded spacex_{download_link}')
 
 
 def main():
     parser = argparse.ArgumentParser('Program Description')
-    parser.add_argument('link_id', help='launch id')
+    parser.add_argument('--link_id', default='latest', help='launch id')
     args = parser.parse_args()
-    if args.link_id:
-        url = f'https://api.spacexdata.com/v5/launches/{args.link_id}'
-    else:
-        url = 'https://api.spacexdata.com/v5/launches/latest'
     try:
+        url = f'https://api.spacexdata.com/v5/launches/{args.link_id}'
         fetch_spacex_last_launch(url)
-    except:
-        print("Couldn't get a photo")
+    except requests.exceptions.HTTPError:
+        print('Incorrect or invalid startup ID is specified')
 
 
 if __name__ == "__main__":
