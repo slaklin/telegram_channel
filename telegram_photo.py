@@ -6,7 +6,8 @@ import telegram
 from dotenv import load_dotenv
 
 
-def publish_image_telegram(bot, user_parameters, chat_id):
+def publish_image_telegram(tg_bot_token, user_parameters, chat_id):
+    bot = telegram.Bot(token=tg_bot_token)
     if user_parameters.file_name:
         path = user_parameters.path
         with open(f'{path}{user_parameters.file_name}', 'rb') as file:
@@ -24,12 +25,11 @@ def main():
     load_dotenv()
     tg_bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
-    bot = telegram.Bot(token=tg_bot_token)
     parser = argparse.ArgumentParser('Sending a photo to the telegram channel')
     parser.add_argument('--path', '-p', help='The path to the folder with photos')
     parser.add_argument('--file_name', '-f', help='Photo file name')
     user_parameters = parser.parse_args()
-    publish_image_telegram(bot, user_parameters, chat_id)
+    publish_image_telegram(tg_bot_token, user_parameters, chat_id)
 
 
 if __name__ == "__main__":

@@ -10,26 +10,32 @@ def fetch_spacex_last_launch(url):
     response = requests.get(url)
     response.raise_for_status()
     links_to_photos = response.json()["links"]["flickr"]["original"]
-    download_the_last_launch(links_to_photos, directory)
+    return links_to_photos, directory
 
 
-def download_the_last_launch(links_to_photos, directory):
-    for index_image, image in enumerate(links_to_photos, 1):
-        response = requests.get(image)
-        response.raise_for_status()
-        download_link = f'{directory}/spacex_{index_image}{os.path.splitext(image)[1]}'
-        with open(download_link, 'wb') as file:
-            file.write(response.content)
-            print(f'Downloaded spacex_{download_link}')
+def find_image_links(links_to_photos, directory):
+    for image_index, image in enumerate(links_to_photos, 1):
+        download_the_last_launch(image_index, image, directory)
+
+
+def download_the_last_launch(image_index, image, directory):
+    response = requests.get(image)
+    response.raise_for_status()
+    download_link = f'{directory}/spacex_{image_index}{os.path.splitext(image)[1]}'
+    with open(download_link, 'wb') as file:
+        file.write(response.content)
+        print(f'Downloaded spacex_{download_link}')
 
 
 def main():
-    parser = argparse.ArgumentParser('Program Description')
-    parser.add_argument('--link_id', default='latest', help='launch id')
+    parser = argparse.ArgumentParser("The program downloads photos from the launch"
+                                     "of Spacex rockets by the specified ID")
+    parser.add_argument('--link_id', default='latest', help='Enter the startup ID')
     args = parser.parse_args()
     try:
         url = f'https://api.spacexdata.com/v5/launches/{args.link_id}'
-        fetch_spacex_last_launch(url)
+        links_to_photos, directory = fetch_spacex_last_launch(url)
+        find_image_links(links_to_photos, directory)
     except requests.exceptions.HTTPError:
         print('Incorrect or invalid startup ID is specified')
 

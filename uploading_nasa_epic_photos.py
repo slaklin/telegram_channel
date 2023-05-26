@@ -22,16 +22,16 @@ def sort_photos_by_date(date_of_photos, nasa_access_token):
     }
     response = requests.get(url_date, params=request_parameters)
     response.raise_for_status()
-    dictionary = response.json()
-    download_links = []
-    for photo_title in dictionary:
+    snapshot_data = response.json()
+    links_by_date = []
+    for photo_title in snapshot_data:
         image_url = f"https://api.nasa.gov/EPIC/archive/natural/{changed_date}/png/{photo_title['image']}" \
-                        f".png"
-        download_links.append(image_url)
-    if not download_links:
+                    f".png"
+        links_by_date.append(image_url)
+    if not links_by_date:
         raise EmptyDictionary
     else:
-        upload_photos(download_links, directory, request_parameters)
+        return links_by_date, directory, request_parameters
 
 
 def sort_recent_photos(nasa_access_token):
@@ -43,24 +43,28 @@ def sort_recent_photos(nasa_access_token):
     }
     response = requests.get(url, params=request_parameters)
     response.raise_for_status()
-    dictionary = response.json()
-    download_links = []
-    for parameters_of_link in dictionary:
+    snapshot_data = response.json()
+    links_by_date = []
+    for parameters_of_link in snapshot_data:
         date = datetime.datetime.strptime(parameters_of_link['date'], "%Y-%m-%d %H:%M:%S")
         formatted_date = date.strftime("%Y/%m/%d")
         link = f'https://api.nasa.gov/EPIC/archive/natural/{formatted_date}/png/{parameters_of_link["image"]}' \
                f'.png'
-        download_links.append(link)
-    upload_photos(download_links, directory, request_parameters)
+        links_by_date.append(link)
+    return links_by_date, directory, request_parameters
 
 
-def upload_photos(download_links, directory, request_parameters):
-    for image_index, image in enumerate(download_links, 1):
-        response = requests.get(image, params=request_parameters)
-        response.raise_for_status()
-        with open(f'{directory}/epic_photos_{image_index}.png', 'wb') as file:
-            file.write(response.content)
-            print(f'Downloaded epic_photos_{image_index}')
+def find_image_links(links_by_date, directory, request_parameters):
+    for image_index, image in enumerate(links_by_date, 1):
+        upload_photos(image_index, image, directory, request_parameters)
+
+
+def upload_photos(image_index, image, directory, request_parameters):
+    response = requests.get(image, params=request_parameters)
+    response.raise_for_status()
+    with open(f'{directory}/epic_photos_{image_index}.png', 'wb') as file:
+        file.write(response.content)
+        print(f'Downloaded epic_photos_{image_index}')
 
 
 def main():
@@ -71,9 +75,13 @@ def main():
     args = parser.parse_args()
     date_of_photos = args.date_of_photos
     try:
-        sort_photos_by_date(date_of_photos, nasa_access_token)
+        links_by_date, directory, request_parameters = sort_photos_by_date(date_of_photos, nasa_access_token)
+        find_image_links(links_by_date, directory, request_parameters)
     except EmptyDictionary:
-        sort_recent_photos(nasa_access_token)
+        print('No pictures were taken on the specified date, we upload the pictures according '
+              'to the last available date')
+        links_by_date, directory, request_parameters = sort_recent_photos(nasa_access_token)
+        find_image_links(links_by_date, directory, request_parameters)
 
 
 if __name__ == "__main__":
