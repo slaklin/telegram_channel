@@ -10,16 +10,11 @@ class EmptyDictionary(Exception):
     pass
 
 
-def sort_photos_by_date(date_of_photos, nasa_access_token):
-    directory = os.path.join(os.getcwd(), r'space_photos')
-    os.makedirs(directory, exist_ok=True)
+def sort_photos_by_date(date_of_photos, request_parameters):
     date_picture = datetime.datetime.strptime(date_of_photos, "%Y-%m-%d")
     changed_date = date_picture.strftime("%Y/%m/%d")
     base_url = 'https://api.nasa.gov/EPIC/api/natural/date/'
     url_date = f"{base_url}{date_picture}"
-    request_parameters = {
-        "api_key": nasa_access_token,
-    }
     response = requests.get(url_date, params=request_parameters)
     response.raise_for_status()
     snapshot_data = response.json()
@@ -31,16 +26,11 @@ def sort_photos_by_date(date_of_photos, nasa_access_token):
     if not links_by_date:
         raise EmptyDictionary
     else:
-        return links_by_date, directory, request_parameters
+        return links_by_date
 
 
-def sort_recent_photos(nasa_access_token):
-    directory = os.path.join(os.getcwd(), r'space_photos')
-    os.makedirs(directory, exist_ok=True)
+def sort_recent_photos(request_parameters):
     url = "https://api.nasa.gov/EPIC/api/natural/images"
-    request_parameters = {
-        "api_key": nasa_access_token,
-    }
     response = requests.get(url, params=request_parameters)
     response.raise_for_status()
     snapshot_data = response.json()
@@ -51,7 +41,7 @@ def sort_recent_photos(nasa_access_token):
         link = f'https://api.nasa.gov/EPIC/archive/natural/{formatted_date}/png/{parameters_of_link["image"]}' \
                f'.png'
         links_by_date.append(link)
-    return links_by_date, directory, request_parameters
+    return links_by_date
 
 
 def find_image_links(links_by_date, directory, request_parameters):
@@ -74,13 +64,18 @@ def main():
     parser.add_argument('date_of_photos', type=str, help='Date in the format "YYYY-MM-DD"')
     args = parser.parse_args()
     date_of_photos = args.date_of_photos
+    directory = os.path.join(os.getcwd(), r'space_photos')
+    os.makedirs(directory, exist_ok=True)
+    request_parameters = {
+        "api_key": nasa_access_token,
+    }
     try:
-        links_by_date, directory, request_parameters = sort_photos_by_date(date_of_photos, nasa_access_token)
+        links_by_date = sort_photos_by_date(date_of_photos, request_parameters)
         find_image_links(links_by_date, directory, request_parameters)
     except EmptyDictionary:
         print('No pictures were taken on the specified date, we upload the pictures according '
               'to the last available date')
-        links_by_date, directory, request_parameters = sort_recent_photos(nasa_access_token)
+        links_by_date = sort_recent_photos(request_parameters)
         find_image_links(links_by_date, directory, request_parameters)
 
 
