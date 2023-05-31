@@ -5,12 +5,10 @@ import requests
 
 
 def fetch_spacex_last_launch(url):
-    directory = os.path.join(os.getcwd(), r'space_photos')
-    os.makedirs(directory, exist_ok=True)
     response = requests.get(url)
     response.raise_for_status()
     links_to_photos = response.json()["links"]["flickr"]["original"]
-    return links_to_photos, directory
+    return links_to_photos
 
 
 def find_image_links(links_to_photos, directory):
@@ -32,9 +30,11 @@ def main():
                                      "of Spacex rockets by the specified ID")
     parser.add_argument('--link_id', default='latest', help='Enter the startup ID')
     args = parser.parse_args()
+    directory = os.path.join(os.getcwd(), r'space_photos')
+    os.makedirs(directory, exist_ok=True)
     try:
         url = f'https://api.spacexdata.com/v5/launches/{args.link_id}'
-        links_to_photos, directory = fetch_spacex_last_launch(url)
+        links_to_photos = fetch_spacex_last_launch(url)
         find_image_links(links_to_photos, directory)
     except requests.exceptions.HTTPError:
         print('Incorrect or invalid startup ID is specified')

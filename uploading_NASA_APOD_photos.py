@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 
 
 def find_apod_images(url, number, nasa_api_key):
-    directory = os.path.join(os.getcwd(), r'space_photos')
-    os.makedirs(directory, exist_ok=True)
     request_parameters = {
         "api_key": nasa_api_key,
         "count": f'{number}',
@@ -15,7 +13,7 @@ def find_apod_images(url, number, nasa_api_key):
     response = requests.get(url, params=request_parameters)
     response.raise_for_status()
     links = [item['url'] for item in response.json()]
-    return links, directory
+    return links
 
 
 def find_apod_links(links, directory):
@@ -40,7 +38,9 @@ def main():
     parser.add_argument('number_of_photos', type=int, default=10, help='Enter a number of photos')
     args = parser.parse_args()
     number = args.number_of_photos
-    links, directory = find_apod_images(url, number, nasa_api_key)
+    directory = os.path.join(os.getcwd(), r'space_photos')
+    os.makedirs(directory, exist_ok=True)
+    links = find_apod_images(url, number, nasa_api_key)
     find_apod_links(links, directory)
 
 
