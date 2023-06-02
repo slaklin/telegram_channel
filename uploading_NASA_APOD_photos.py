@@ -4,6 +4,8 @@ import os
 import requests
 from dotenv import load_dotenv
 
+from fetch_spacex_last_launch import uploading_photos
+
 
 def find_apod_images(url, number, nasa_api_key):
     request_parameters = {
@@ -12,22 +14,12 @@ def find_apod_images(url, number, nasa_api_key):
     }
     response = requests.get(url, params=request_parameters)
     response.raise_for_status()
-    links = [item['url'] for item in response.json()]
-    return links
+    links_to_photos = [item['url'] for item in response.json()]
+    return links_to_photos
 
 
-def find_apod_links(links, directory):
-    for image_index, image in enumerate(links, 1):
-        download_apod_images(image_index, image, directory)
-
-
-def download_apod_images(image_index, image, directory):
-    response = requests.get(image)
-    response.raise_for_status()
-    download_link = f'{directory}/apod_photos_{image_index}{os.path.splitext(image)[1]}'
-    with open(download_link, 'wb') as file:
-        file.write(response.content)
-        print(f'Downloaded apod_photos_{download_link}')
+def download_apod_images(links_to_photos, directory):
+    uploading_photos(links_to_photos, directory)
 
 
 def main():
@@ -40,8 +32,8 @@ def main():
     number = args.number_of_photos
     directory = os.path.join(os.getcwd(), r'space_photos')
     os.makedirs(directory, exist_ok=True)
-    links = find_apod_images(url, number, nasa_api_key)
-    find_apod_links(links, directory)
+    links_to_photos = find_apod_images(url, number, nasa_api_key)
+    download_apod_images(links_to_photos, directory)
 
 
 if __name__ == "__main__":

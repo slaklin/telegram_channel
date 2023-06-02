@@ -11,18 +11,14 @@ def fetch_spacex_last_launch(url):
     return links_to_photos
 
 
-def find_image_links(links_to_photos, directory):
+def uploading_photos(links_to_photos, directory, **request_parameters):
     for image_index, image in enumerate(links_to_photos, 1):
-        download_the_last_launch(image_index, image, directory)
-
-
-def download_the_last_launch(image_index, image, directory):
-    response = requests.get(image)
-    response.raise_for_status()
-    download_link = f'{directory}/spacex_{image_index}{os.path.splitext(image)[1]}'
-    with open(download_link, 'wb') as file:
-        file.write(response.content)
-        print(f'Downloaded spacex_{download_link}')
+        response = requests.get(image, params=request_parameters)
+        response.raise_for_status()
+        download_folder = f"{directory}/space_photos{image_index}{os.path.splitext(image)[1]}"
+        with open(download_folder, 'wb') as file:
+            file.write(response.content)
+            print(f'Downloaded {download_folder}')
 
 
 def main():
@@ -35,7 +31,7 @@ def main():
     try:
         url = f'https://api.spacexdata.com/v5/launches/{args.link_id}'
         links_to_photos = fetch_spacex_last_launch(url)
-        find_image_links(links_to_photos, directory)
+        uploading_photos(links_to_photos, directory)
     except requests.exceptions.HTTPError:
         print('Incorrect or invalid startup ID is specified')
 
