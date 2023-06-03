@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from fetch_spacex_last_launch import uploading_photos
 
 
-def find_apod_images(url, number, nasa_api_key):
+def find_apod_images(number, nasa_api_key):
+    url = 'https://api.nasa.gov/planetary/apod'
     request_parameters = {
         "api_key": nasa_api_key,
         "count": f'{number}',
@@ -23,7 +24,6 @@ def download_apod_images(links_to_photos, directory):
 
 
 def main():
-    url = 'https://api.nasa.gov/planetary/apod'
     load_dotenv()
     nasa_api_key = os.getenv("NASA_API_KEY")
     parser = argparse.ArgumentParser('Download APOD images from NASA')
@@ -32,7 +32,7 @@ def main():
     number = args.number_of_photos
     directory = os.path.join(os.getcwd(), r'space_photos')
     os.makedirs(directory, exist_ok=True)
-    links_to_photos = find_apod_images(url, number, nasa_api_key)
+    links_to_photos = find_apod_images(number, nasa_api_key)
     download_apod_images(links_to_photos, directory)
 
 
