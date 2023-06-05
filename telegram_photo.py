@@ -6,19 +6,17 @@ import telegram
 from dotenv import load_dotenv
 
 
-def publish_image_telegram(tg_bot_token, user_parameters, chat_id):
+def publish_image_telegram(tg_bot_token, file_name, path, chat_id):
     bot = telegram.Bot(token=tg_bot_token)
-    if user_parameters.file_name:
-        path = user_parameters.path
-        with open(f'{path}{user_parameters.file_name}', 'rb') as file:
-            bot.send_document(chat_id=chat_id, document=file)
-            print(f'Photo {user_parameters.file_name} uploaded')
-    else:
-        file_name = random.choice(os.listdir(user_parameters.path))
-        path = user_parameters.path
+    if file_name:
         with open(f'{path}{file_name}', 'rb') as file:
             bot.send_document(chat_id=chat_id, document=file)
             print(f'Photo {file_name} uploaded')
+    else:
+        random_name = random.choice(os.listdir(path))
+        with open(f'{path}{random_name}', 'rb') as file:
+            bot.send_document(chat_id=chat_id, document=file)
+            print(f'Photo {random_name} uploaded')
 
 
 def main():
@@ -29,7 +27,9 @@ def main():
     parser.add_argument('--path', '-p', help='The path to the folder with photos')
     parser.add_argument('--file_name', '-f', help='Photo file name')
     user_parameters = parser.parse_args()
-    publish_image_telegram(tg_bot_token, user_parameters, chat_id)
+    file_name = user_parameters.file_name
+    path = user_parameters.path
+    publish_image_telegram(tg_bot_token, file_name, path, chat_id)
 
 
 if __name__ == "__main__":
