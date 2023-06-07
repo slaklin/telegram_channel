@@ -8,10 +8,6 @@ from dotenv import load_dotenv
 from fetch_spacex_last_launch import uploading_photos
 
 
-class EmptyDictionary(Exception):
-    pass
-
-
 def generates_links_by_date(date_of_photos, request_parameters):
     date_picture = datetime.datetime.strptime(date_of_photos, "%Y-%m-%d")
     changed_date = date_picture.strftime("%Y/%m/%d")
@@ -25,10 +21,7 @@ def generates_links_by_date(date_of_photos, request_parameters):
         image_url = f"https://api.nasa.gov/EPIC/archive/natural/{changed_date}/png/{photo_title['image']}" \
                     f".png"
         links_to_photos.append(image_url)
-    if not links_to_photos:
-        raise EmptyDictionary
-    else:
-        return links_to_photos
+    return links_to_photos
 
 
 def generates_links_last_date(request_parameters):
@@ -62,13 +55,13 @@ def main():
     request_parameters = {
         "api_key": nasa_access_token,
     }
-    try:
-        links_to_photos = generates_links_by_date(date_of_photos, request_parameters)
-        uploading_nasa_photos(links_to_photos, directory, request_parameters)
-    except EmptyDictionary:
+    links_to_photos = generates_links_by_date(date_of_photos, request_parameters)
+    if not links_to_photos:
         print('No pictures were taken on the specified date, we upload the pictures according '
               'to the last available date')
         links_to_photos = generates_links_last_date(request_parameters)
+        uploading_nasa_photos(links_to_photos, directory, request_parameters)
+    else:
         uploading_nasa_photos(links_to_photos, directory, request_parameters)
 
 
