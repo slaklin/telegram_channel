@@ -12,7 +12,7 @@ class EmptyDictionary(Exception):
     pass
 
 
-def sort_photos_by_date(date_of_photos, request_parameters):
+def generates_links_by_date(date_of_photos, request_parameters):
     date_picture = datetime.datetime.strptime(date_of_photos, "%Y-%m-%d")
     changed_date = date_picture.strftime("%Y/%m/%d")
     base_url = 'https://api.nasa.gov/EPIC/api/natural/date/'
@@ -31,7 +31,7 @@ def sort_photos_by_date(date_of_photos, request_parameters):
         return links_to_photos
 
 
-def sort_recent_photos(request_parameters):
+def generates_links_last_date(request_parameters):
     url = "https://api.nasa.gov/EPIC/api/natural/images"
     response = requests.get(url, params=request_parameters)
     response.raise_for_status()
@@ -63,12 +63,12 @@ def main():
         "api_key": nasa_access_token,
     }
     try:
-        links_to_photos = sort_photos_by_date(date_of_photos, request_parameters)
+        links_to_photos = generates_links_by_date(date_of_photos, request_parameters)
         uploading_nasa_photos(links_to_photos, directory, request_parameters)
     except EmptyDictionary:
         print('No pictures were taken on the specified date, we upload the pictures according '
               'to the last available date')
-        links_to_photos = sort_recent_photos(request_parameters)
+        links_to_photos = generates_links_last_date(request_parameters)
         uploading_nasa_photos(links_to_photos, directory, request_parameters)
 
 
