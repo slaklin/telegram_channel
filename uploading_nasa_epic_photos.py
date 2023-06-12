@@ -39,10 +39,6 @@ def generates_links_last_date(request_parameters):
     return links_to_photos
 
 
-def uploading_nasa_photos(links_to_photos, directory, request_parameters):
-    uploading_photos(links_to_photos, directory, **request_parameters)
-
-
 def main():
     load_dotenv()
     nasa_access_token = os.getenv("NASA_API_KEY")
@@ -60,9 +56,9 @@ def main():
         print('No pictures were taken on the specified date, we upload the pictures according '
               'to the last available date')
         links_to_photos = generates_links_last_date(request_parameters)
-        uploading_nasa_photos(links_to_photos, directory, request_parameters)
+        uploading_photos(links_to_photos, directory, **request_parameters)
     else:
-        uploading_nasa_photos(links_to_photos, directory, request_parameters)
+        uploading_photos(links_to_photos, directory, **request_parameters)
 
 
 if __name__ == "__main__":
