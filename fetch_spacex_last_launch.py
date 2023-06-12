@@ -15,10 +15,10 @@ def uploading_photos(links_to_photos, directory, **request_parameters):
     for image_index, image in enumerate(links_to_photos, 1):
         response = requests.get(image, params=request_parameters)
         response.raise_for_status()
-        download_folder = f"{directory}/space_photos{image_index}{os.path.splitext(image)[1]}"
-        with open(download_folder, 'wb') as file:
+        file_path = f"{directory}/space_photos{image_index}{os.path.splitext(image)[1]}"
+        with open(file_path, 'wb') as file:
             file.write(response.content)
-            print(f'Downloaded {download_folder}')
+            print(f'Downloaded {file_path}')
 
 
 def main():
