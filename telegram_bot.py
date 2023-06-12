@@ -16,7 +16,7 @@ def publish_photos_telegram(bot, time_interval, chat_id):
         for photo in photos_from_directory:
             with open(f'./space_photos/{photo}', 'rb') as file:
                 bot.send_document(chat_id=chat_id, document=file)
-                print(f'Photo {photo} uploaded')
+            print(f'Photo {photo} uploaded')
             time.sleep(time_interval * 3600)
 
 
