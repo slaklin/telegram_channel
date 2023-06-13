@@ -5,7 +5,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from fetch_spacex_last_launch import downloads_photos_to_folder
+from downloads_photos_to_folder import downloads_photos_to_folder
 
 
 def generates_links_by_date(date_of_photos, request_parameters):

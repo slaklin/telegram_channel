@@ -4,7 +4,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from fetch_spacex_last_launch import downloads_photos_to_folder
+from downloads_photos_to_folder import downloads_photos_to_folder
 
 
 def find_apod_images(number, nasa_api_key, directory):
