@@ -9,4 +9,4 @@ def downloads_photos_to_folder(links_to_photos, directory, **request_parameters)
         file_path = f'{directory}/space_photos{image_index}{os.path.splitext(image)[1]}'
         with open(file_path, 'wb') as file:
             file.write(response.content)
-            print(f'Downloaded {file_path}')
+        print(f'Downloaded {file_path}')
