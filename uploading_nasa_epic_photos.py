@@ -52,12 +52,11 @@ def main():
         "api_key": nasa_access_token,
     }
     links_to_photos = generates_links_by_date(date_of_photos, request_parameters)
+    downloads_photos_to_folder(links_to_photos, directory, **request_parameters)
     if not links_to_photos:
         print('No pictures were taken on the specified date, we upload the pictures according '
               'to the last available date')
         links_to_photos = generates_links_last_date(request_parameters)
-        downloads_photos_to_folder(links_to_photos, directory, **request_parameters)
-    else:
         downloads_photos_to_folder(links_to_photos, directory, **request_parameters)
 
 
