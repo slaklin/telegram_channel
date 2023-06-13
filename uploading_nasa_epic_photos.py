@@ -12,7 +12,7 @@ def generates_links_by_date(date_of_photos, request_parameters):
     date_picture = datetime.datetime.strptime(date_of_photos, "%Y-%m-%d")
     changed_date = date_picture.strftime("%Y/%m/%d")
     base_url = 'https://api.nasa.gov/EPIC/api/natural/date/'
-    url_date = f"{base_url}{date_picture}"
+    url_date = f'{base_url}{date_picture}'
     response = requests.get(url_date, params=request_parameters)
     response.raise_for_status()
     information_on_request = response.json()
@@ -25,7 +25,7 @@ def generates_links_by_date(date_of_photos, request_parameters):
 
 
 def generates_links_last_date(request_parameters):
-    url = "https://api.nasa.gov/EPIC/api/natural/images"
+    url = 'https://api.nasa.gov/EPIC/api/natural/images'
     response = requests.get(url, params=request_parameters)
     response.raise_for_status()
     information_on_request = response.json()
@@ -33,8 +33,8 @@ def generates_links_last_date(request_parameters):
     for parameters_of_link in information_on_request:
         date = datetime.datetime.strptime(parameters_of_link['date'], "%Y-%m-%d %H:%M:%S")
         formatted_date = date.strftime("%Y/%m/%d")
-        link = f'https://api.nasa.gov/EPIC/archive/natural/{formatted_date}/png/{parameters_of_link["image"]}' \
-               f'.png'
+        link = f"https://api.nasa.gov/EPIC/archive/natural/{formatted_date}/png/{parameters_of_link['image']}" \
+               f".png"
         links_to_photos.append(link)
     return links_to_photos
 
