@@ -5,7 +5,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from fetch_spacex_last_launch import uploading_photos
+from fetch_spacex_last_launch import downloads_photos_to_folder
 
 
 def generates_links_by_date(date_of_photos, request_parameters):
@@ -56,9 +56,9 @@ def main():
         print('No pictures were taken on the specified date, we upload the pictures according '
               'to the last available date')
         links_to_photos = generates_links_last_date(request_parameters)
-        uploading_photos(links_to_photos, directory, **request_parameters)
+        downloads_photos_to_folder(links_to_photos, directory, **request_parameters)
     else:
-        uploading_photos(links_to_photos, directory, **request_parameters)
+        downloads_photos_to_folder(links_to_photos, directory, **request_parameters)
 
 
 if __name__ == "__main__":

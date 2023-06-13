@@ -4,7 +4,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from fetch_spacex_last_launch import uploading_photos
+from fetch_spacex_last_launch import downloads_photos_to_folder
 
 
 def find_apod_images(number, nasa_api_key, directory):
@@ -16,7 +16,7 @@ def find_apod_images(number, nasa_api_key, directory):
     response = requests.get(url, params=request_parameters)
     response.raise_for_status()
     links_to_photos = [item['url'] for item in response.json()]
-    uploading_photos(links_to_photos, directory)
+    downloads_photos_to_folder(links_to_photos, directory)
 
 
 def main():

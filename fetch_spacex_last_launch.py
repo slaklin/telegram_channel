@@ -11,7 +11,7 @@ def fetch_spacex_last_launch(url):
     return links_to_photos
 
 
-def uploading_photos(links_to_photos, directory, **request_parameters):
+def downloads_photos_to_folder(links_to_photos, directory, **request_parameters):
     for image_index, image in enumerate(links_to_photos, 1):
         response = requests.get(image, params=request_parameters)
         response.raise_for_status()
