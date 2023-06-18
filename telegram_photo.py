@@ -9,14 +9,13 @@ from dotenv import load_dotenv
 def publish_image_telegram(tg_bot_token, file_name, path, chat_id):
     bot = telegram.Bot(token=tg_bot_token)
     if file_name:
-        with open(f'{path}{file_name}', 'rb') as file:
-            bot.send_document(chat_id=chat_id, document=file)
-        print(f'Photo {file_name} uploaded')
+        file_path = f'{path}{file_name}'
     else:
         random_name = random.choice(os.listdir(path))
-        with open(f'{path}{random_name}', 'rb') as file:
-            bot.send_document(chat_id=chat_id, document=file)
-        print(f'Photo {random_name} uploaded')
+        file_path = f'{path}{random_name}'
+    with open(file_path, 'rb') as file:
+        bot.send_document(chat_id=chat_id, document=file)
+    print(f'Photo {file_path} uploaded')
 
 
 def main():
