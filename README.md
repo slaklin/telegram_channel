@@ -50,10 +50,10 @@ Photo spacex_1.jpg uploaded
 #### The program accepts from the user the path to the folder with photos and the file name of the photo.
 - Launch the program to publish the desired photo:
 ```
-C:\Users\telegram_project> python telegram_photo.py -p C:/Users/Вячеслав/Desktop/Учеба/telegram_project/space_photos/ -f spacex_1.jpg
-Photo spacex_1.jpg uploaded
-C:\Users\telegram_project> python telegram_photo.py -p C:/Users/Вячеслав/Desktop/Учеба/telegram_project/space_photos/
-Photo photos_epic_1b_20230421002712.png uploaded
+C:\Users\telegram_project> python telegram_cosmic_life.py -p C:/Users/Вячеслав/Desktop/Учеба/telegram_project/space_photos/ -f spacex_1.jpg
+Photo C:/Users/Вячеслав/Desktop/Учеба/telegram_project/space_photos/spacex_1.jpg uploaded
+C:\Users\telegram_project> python telegram_cosmic_life.py -p C:/Users/Вячеслав/Desktop/Учеба/telegram_project/space_photos/
+Photo C:/Users/Вячеслав/Desktop/Учеба/telegram_project/space_photos/photos_epic_1b_20230421002712.png uploaded
 ```
 #### The program downloads the specified number of APOD photos.
 - Launching the program to download photos:
